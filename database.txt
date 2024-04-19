@@ -1,0 +1,5 @@
+{"surname": "Odnoorkova", "name": "Alexandra", "patronymic": "Vladimirovna", "phone": "+74956784532", "note": "live in Maryina Roscha"}
+{"surname": "Pechurin", "name": "Dmitry", "patronymic": "Alekseevich", "phone": "+79168463124", "note": "live in Sokolinaya Gora"}
+{"surname": "Pavlenko", "name": "Mihail", "patronymic": "Sergeevich", "phone": "+74563214532", "note": "live in Kuchino"}
+{"surname": "Yarovenko", "name": "Vladimir", "patronymic": "Sergeevich", "phone": "+73451236543", "note": "live in Baumanskaya"}
+{"surname": "Eremin", "name": "Alexander", "patronymic": "Olegovich", "phone": "+75643453243", "note": "live in Izmaylovo"}
