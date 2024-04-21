@@ -4,6 +4,7 @@ import json
 import io
 import struct
 
+
 class Message:
     def __init__(self, selector, sock, addr):
         self.selector = selector
@@ -63,7 +64,7 @@ class Message:
         return obj
 
     def _create_message(
-        self, *, content_bytes, content_type, content_encoding
+            self, *, content_bytes, content_type, content_encoding
     ):
         jsonheader = {
             "byteorder": sys.byteorder,
@@ -128,7 +129,7 @@ class Message:
 
     def read(self):
         self._read()
-        
+
         if self._jsonheader_len is None:
             self.process_protoheader()
 
@@ -139,7 +140,6 @@ class Message:
         if self.jsonheader:
             if self.request is None:
                 self.process_request()
-        
 
     def write(self):
         if self.request:
@@ -185,10 +185,10 @@ class Message:
             )
             self._recv_buffer = self._recv_buffer[hdrlen:]
             for reqhdr in (
-                "byteorder",
-                "content-length",
-                "content-type",
-                "content-encoding",
+                    "byteorder",
+                    "content-length",
+                    "content-type",
+                    "content-encoding",
             ):
                 if reqhdr not in self.jsonheader:
                     raise ValueError(f"Missing required header '{reqhdr}'.")
@@ -244,8 +244,8 @@ class Message:
             line -= 1
             lines.pop(line)
             if len(lines) != 0:
-                lines = [json.dumps(lines[i])+'\n' for i in range(len(lines))]
-                lines[len(lines)-1] = lines[len(lines)-1].rstrip('\n')
+                lines = [json.dumps(lines[i]) + '\n' for i in range(len(lines))]
+                lines[len(lines) - 1] = lines[len(lines) - 1].rstrip('\n')
             with open('database.txt', 'w') as file:
                 file.writelines(lines)
             return f"Line was deleted"

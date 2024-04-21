@@ -1,21 +1,27 @@
 import socket
 import selectors
+import sys
 import traceback
+import time
 
 import libclient
 
 sel = selectors.DefaultSelector()
 
+
 def connect_to_server(sock, addr):
+    start_time = time.time()
     print(f"Waiting connection to {addr}...")
     while True:
+        if time.time() - start_time >= 120:
+            print(f"There is no answer from {addr}")
+            sys.exit()
         try:
             sock.connect(addr)
             print(f"Starting connection to {addr}")
             break
         except OSError:
             pass
-
 
 
 print(f"Enter host to connect:")

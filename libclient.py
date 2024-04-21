@@ -6,6 +6,7 @@ import struct
 
 values = dict(surname="", name="", patronymic="", phone="", note="")
 
+
 class Message:
     def __init__(self, selector, sock, addr, request):
         self.selector = selector
@@ -65,7 +66,7 @@ class Message:
         return obj
 
     def _create_message(
-        self, *, content_bytes, content_type, content_encoding
+            self, *, content_bytes, content_type, content_encoding
     ):
         jsonheader = {
             "byteorder": sys.byteorder,
@@ -90,7 +91,6 @@ class Message:
             self.read()
         if mask & selectors.EVENT_WRITE:
             self.write()
-
 
     def read(self):
         self._read()
@@ -150,10 +150,10 @@ class Message:
             )
             self._recv_buffer = self._recv_buffer[hdrlen:]
             for reqhdr in (
-                "byteorder",
-                "content-length",
-                "content-type",
-                "content-encoding",
+                    "byteorder",
+                    "content-length",
+                    "content-type",
+                    "content-encoding",
             ):
                 if reqhdr not in self.jsonheader:
                     raise ValueError(f"Missing required header '{reqhdr}'.")
@@ -187,17 +187,17 @@ class Message:
         print(f"Choose action: search, add, delete, check or exit.")
         action = input()
         while (action != "search") \
-              and (action != "add") \
-              and (action != "delete") \
-              and (action != "check") \
-              and (action != "exit"):
+                and (action != "add") \
+                and (action != "delete") \
+                and (action != "check") \
+                and (action != "exit"):
             print(f"Unknown action. Enter search, add, delete, check or exit.")
             action = input()
         match action:
             case "search":
                 print(f"Choose field where search: {', '.join([key for key in values])}.")
                 field = input()
-                while values.get(field) == None:
+                while values.get(field) is None:
                     warning = f"Field wasn't found. Use this fields: "
                     warning += ', '.join([key for key in values])
                     print(warning)
