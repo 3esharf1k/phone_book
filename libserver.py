@@ -18,7 +18,6 @@ class Message:
         self.exit_request = False
 
     def _set_selector_events_mask(self, mode):
-        """Set selector to listen for events: mode is 'r', 'w', or 'rw'."""
         if mode == "r":
             events = selectors.EVENT_READ
         elif mode == "w":
@@ -31,29 +30,24 @@ class Message:
 
     def _read(self):
         try:
-            # Should be ready to read
             data = self.sock.recv(4096)
         except BlockingIOError:
-            # Resource temporarily unavailable (errno EWOULDBLOCK)
             pass
         else:
             if data:
                 self._recv_buffer += data
             else:
-                raise RuntimeError("Peer closed.")
+                raise RuntimeError(f"Peer closed.")
 
     def _write(self):
         if self._send_buffer:
             print(f"Sending {self._send_buffer!r} to {self.addr}")
             try:
-                # Should be ready to write
                 sent = self.sock.send(self._send_buffer)
             except BlockingIOError:
-                # Resource temporarily unavailable (errno EWOULDBLOCK)
                 pass
             else:
                 self._send_buffer = self._send_buffer[sent:]
-                #Close when the buffer is drained. The response has been sent.
                 if sent and not self._send_buffer:
                     self._set_selector_events_mask("r")
 
@@ -98,7 +92,6 @@ class Message:
                 answer = self.delete_from_book(query)
                 content = {"result": answer}
             case "check":
-                query = self.request.get("value")
                 lines = self.check_book()
                 if not lines:
                     content = {"result": f"Phone book is empty.\n"}
@@ -174,7 +167,6 @@ class Message:
         except OSError as e:
             print(f"Error: socket.close() exception for {self.addr}: {e!r}")
         finally:
-            # Delete reference to socket object for garbage collection
             self.sock = None
 
     def process_protoheader(self):
@@ -210,7 +202,6 @@ class Message:
         encoding = self.jsonheader["content-encoding"]
         self.request = self._json_decode(data, encoding)
         print(f"Received request {self.request!r} from {self.addr}")
-        #Set selector to listen for write events, we're done reading.
         self._set_selector_events_mask("w")
 
     def create_response(self):

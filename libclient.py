@@ -21,7 +21,6 @@ class Message:
         self.exit_response = False
 
     def _set_selector_events_mask(self, mode):
-        """Set selector to listen for events: mode is 'r', 'w', or 'rw'."""
         if mode == "r":
             events = selectors.EVENT_READ
         elif mode == "w":
@@ -34,25 +33,20 @@ class Message:
 
     def _read(self):
         try:
-            # Should be ready to read
             data = self.sock.recv(4096)
         except BlockingIOError:
-            # Resource temporarily unavailable (errno EWOULDBLOCK)
             pass
         else:
             if data:
                 self._recv_buffer += data
             else:
-                raise RuntimeError("Peer closed.")
+                raise RuntimeError(f"Peer closed.")
 
     def _write(self):
         if self._send_buffer:
-            print(f"Sending {self._send_buffer!r} to {self.addr}")
             try:
-                # Should be ready to write
                 sent = self.sock.send(self._send_buffer)
             except BlockingIOError:
-                # Resource temporarily unavailable (errno EWOULDBLOCK)
                 pass
             else:
                 self._send_buffer = self._send_buffer[sent:]
@@ -97,6 +91,7 @@ class Message:
         if mask & selectors.EVENT_WRITE:
             self.write()
 
+
     def read(self):
         self._read()
 
@@ -137,7 +132,6 @@ class Message:
         except OSError as e:
             print(f"Error: socket.close() exception for {self.addr}: {e!r}")
         finally:
-            # Delete reference to socket object for garbage collection
             self.sock = None
 
     def process_protoheader(self):
@@ -172,9 +166,7 @@ class Message:
         self._recv_buffer = self._recv_buffer[content_len:]
         encoding = self.jsonheader["content-encoding"]
         self.response = self._json_decode(data, encoding)
-        print(f"Received response {self.response!r} from {self.addr}\n")
         self._process_response_json_content()
-        # Close when response has been processed
         self._set_selector_events_mask("w")
 
     def queue_request(self):

@@ -3,3 +3,5 @@
 {"surname": "Pavlenko", "name": "Mihail", "patronymic": "Sergeevich", "phone": "+74563214532", "note": "live in Kuchino"}
 {"surname": "Yarovenko", "name": "Vladimir", "patronymic": "Sergeevich", "phone": "+73451236543", "note": "live in Baumanskaya"}
 {"surname": "Eremin", "name": "Alexander", "patronymic": "Olegovich", "phone": "+75643453243", "note": "live in Izmaylovo"}
+{"surname": "Soshnikov", "name": "Sergey", "patronymic": "Akexandrovich", "phone": "+73456523421", "note": "live in Lefortovo"}
+{"surname": "Volkov", "name": "Pavel", "patronymic": "Evgenyevich", "phone": "+73452131256", "note": "live in Nizhegorodskaya"}

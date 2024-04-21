@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-
-import sys
 import socket
 import selectors
 import traceback
@@ -9,39 +6,56 @@ import libclient
 
 sel = selectors.DefaultSelector()
 
+def connect_to_server(sock, addr):
+    print(f"Waiting connection to {addr}...")
+    while True:
+        try:
+            sock.connect(addr)
+            print(f"Starting connection to {addr}")
+            break
+        except OSError:
+            pass
+
+
+
 print(f"Enter host to connect:")
 host = input()
 print(f"Enter port to connect:")
 port = int(input())
 
 addr = (host, port)
-print(f"Starting connection to {addr}")
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.setblocking(False)
-sock.connect_ex(addr)
+connect_to_server(sock, addr)
 
 events = selectors.EVENT_WRITE | selectors.EVENT_READ
-message = libclient.Message(sel, sock, addr, None)
-message.create_request()
-sel.register(sock, events, data=message)
+request = libclient.Message(sel, sock, addr, None)
+request.create_request()
+sel.register(sock, events, data=request)
 
 try:
     while True:
-        events = sel.select(timeout=1)
+        events = sel.select(timeout=None)
         for key, mask in events:
             message = key.data
             try:
                 message.process_events(mask)
+            except ConnectionResetError:
+                sock.close()
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                connect_to_server(sock, addr)
+                request = libclient.Message(sel, sock, addr, None)
+                print(f"Repeat your request")
+                request.create_request()
+                sel.modify(sock, selectors.EVENT_WRITE | selectors.EVENT_READ, data=request)
             except Exception:
                 print(
                     f"Main: Error: Exception for {message.addr}:\n"
                     f"{traceback.format_exc()}"
                 )
                 message.close()
-        # Check for a socket being monitored to continue.
         if not sel.get_map():
             break
 except KeyboardInterrupt:
-    print("Caught keyboard interrupt, exiting")
+    print(f"Caught keyboard interrupt, exiting")
 finally:
     sel.close()
